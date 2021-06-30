@@ -47,3 +47,8 @@ double ValueNoise2D::operator()(double x, double y)
         );
     }
 }
+
+ValueNoise2D::~ValueNoise2D()
+{
+    delete _interpolation_method;   
+}
