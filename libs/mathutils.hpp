@@ -21,6 +21,7 @@ class Interpolator1D
 {
     public:
         virtual double eval(double v0, double v1, double t) = 0;
+        virtual ~Interpolator1D();
 };
 
 class Interpolator2D
@@ -40,6 +41,7 @@ class Lerp : public Interpolator1D
      * Post: Return a value on the interpolation line between (0, v0) and (1, v1)
      */
     double eval(double v0, double v1, double t) override;
+    ~Lerp() override;
 };
 
 class Cerp : public Interpolator1D
@@ -49,4 +51,5 @@ class Cerp : public Interpolator1D
      * between (0, v0) and (1, v1)
      */
     double eval(double v0, double v1, double t) override;
+    ~Cerp() override;
 };
