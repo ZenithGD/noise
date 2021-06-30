@@ -19,4 +19,6 @@ class ValueNoise2D
         ValueNoise2D(const unsigned int m, const unsigned int n, Interpolator1D* im);
 
         double operator()(double x, double y);
+    
+        ~ValueNoise2D();
 };
