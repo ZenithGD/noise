@@ -27,11 +27,11 @@ double ValueNoise2D::operator()(double x, double y)
 
         Interpolator2D bcerp(_interpolation_method);
         // 0 <= ygrid < GRID_SIZE
-        double ygrid = y * (double)_n;
+        double ygrid = y * (double)_m;
         int ygrid_tile = ygrid;
         double ygrid_pos = ygrid - floor(ygrid);
         // 0 <= xgrid < GRID_SIZE
-        double xgrid = x * (double)_m;
+        double xgrid = x * (double)_n;
         int xgrid_tile = xgrid;
         double xgrid_pos = xgrid - floor(xgrid);
 
