@@ -6,16 +6,14 @@
 #include <noise.hpp>
 #include <mathutils.hpp>
 
-ValueNoise2D::ValueNoise2D(const unsigned int m, const unsigned int n, Interpolator1D* im) 
-    : _interpolation_method(im), _m(m), _n(n), _grid(m + 1, std::vector<double>(n + 1)) 
+ValueNoise2D::ValueNoise2D(const unsigned int m, const unsigned int n, Interpolator1D* im, int seed, int octaves) 
+    : _interpolation_method(im), _seed(seed), _octaves(octaves), _m(m), _n(n), _grid(octaves, 
+                                                                  std::vector<std::vector<double>>(m + 1, 
+                                                                                                   std::vector<double>(n + 1))) 
 {
-    std::vector<std::vector<double>> grid(m, std::vector<double>(n));
-    for ( unsigned int i = 0; i < m; i++ )
+    for ( int i = 0; i < _octaves; i++ )
     {
-        for ( unsigned int j = 0; j < n; j++ )
-        {
-            _grid[i][j] = _r(0, 1);
-        }
+        generateGrid(i);
     }
 }
 
@@ -37,18 +35,40 @@ double ValueNoise2D::operator()(double x, double y)
         int xgrid_tile = xgrid;
         double xgrid_pos = xgrid - floor(xgrid);
 
-        return 255.0 * bcerp.eval
-        (   
-            _grid[xgrid_tile][ygrid_tile], 
-            _grid[xgrid_tile + 1][ygrid_tile], 
-            _grid[xgrid_tile][ygrid_tile + 1], 
-            _grid[xgrid_tile + 1][ygrid_tile + 1],
-            xgrid_pos, ygrid_pos
-        );
+        double value = 0.0;
+        
+        for (int i = 0; i < _octaves; i++)
+        {
+            // std::cout << "Octave " << i << "|" << _grid[i][xgrid_tile][ygrid_tile] << std::endl;
+
+            value += bcerp.eval
+            (   
+                _grid[i][xgrid_tile][ygrid_tile], 
+                _grid[i][xgrid_tile + 1][ygrid_tile], 
+                _grid[i][xgrid_tile][ygrid_tile + 1], 
+                _grid[i][xgrid_tile + 1][ygrid_tile + 1],
+                xgrid_pos, ygrid_pos
+            );
+        }
+
+        // std::cout << value << std::endl;
+        return value / (double)_octaves;
     }
 }
 
 ValueNoise2D::~ValueNoise2D()
 {
     delete _interpolation_method;   
+}
+
+void ValueNoise2D::generateGrid(int octave) 
+{
+    PseudoRandom _r(_seed + octave);
+    for ( unsigned int i = 0; i <= _m; i++ )
+    {
+        for ( unsigned int j = 0; j <= _n; j++ )
+        {
+            _grid[octave][i][j] = _r(0, 1);
+        }
+    }
 }

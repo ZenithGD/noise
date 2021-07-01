@@ -4,13 +4,28 @@
 #include <vector>
 #include <utility>
 
-// Random number generator
-class Random
+// True random number generator
+class TrueRandom
 {
     private:
         std::random_device _rd;
 
     public:
+        /* Pre: 
+        *
+        */
+        double operator()(double lo, double hi);
+};
+
+// Random number generator
+class PseudoRandom
+{
+    private:
+        std::mt19937 _rd;
+
+    public:
+
+        PseudoRandom(int seed);
         /* Pre: 
         *
         */
@@ -51,5 +66,5 @@ class Cerp : public Interpolator1D
      * between (0, v0) and (1, v1)
      */
     double eval(double v0, double v1, double t) override;
-    ~Cerp() override;
+    ~Cerp();
 };
