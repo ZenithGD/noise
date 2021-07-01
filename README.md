@@ -54,6 +54,7 @@ The executable can be found at the bin folder. To execute it, enter the followin
 ```
 
 A new window will appear with a solid green background. To generate a noise image, press ENTER. Here's an sample output, a 512 x 512 noise image with bicubic interpolation and 3 octaves:
+
 ![imagen](https://user-images.githubusercontent.com/37598162/124051034-f7b8fd00-da1b-11eb-9691-307b756c6e37.png)
 
 
