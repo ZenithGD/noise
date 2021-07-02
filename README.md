@@ -1,6 +1,14 @@
 # noise.hpp
 A lightweight noise generator library
 
+## How does it work?
+
+The algorithm for generating the noise follows a typical value noise generation algorithm. First, given any seed, a M x N grid of random values is generated. After that, given any point (x, y) in the unit square [1,0] x [0,1], the noise function will output the value of the interpolation function between the four vertices of the grid in which the point (Nx, My) lies:
+
+![gridnoise](https://user-images.githubusercontent.com/37598162/124202335-68beea00-dada-11eb-8d7d-289b7e69a9fd.png)
+
+The main algorithm will generate K grids, based on the number of desired octaves and return the average of the noise function for each grid.
+
 ## Usage
 This little library has a class for 1-dimensional and 2-dimensional value noise. You will need a noise object and an interpolator pointer in order to generate the noise function values. Apart from that, you only need to include the math and noise header, and that's all! Here's a quick example:
 
