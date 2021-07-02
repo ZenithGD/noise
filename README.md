@@ -61,8 +61,14 @@ The executable can be found at the bin folder. To execute it, enter the followin
 ./bin/main
 ```
 
-A new window will appear with a solid green background. To generate a noise image, press ENTER. Here's an sample output, a 512 x 512 noise image with bicubic interpolation and 3 octaves:
+A new window will appear with a solid green background. To generate a noise image, press ENTER. Here's an sample output, a 400 x 400 noise image with bicubic interpolation and 6 octaves:
 
-![imagen](https://user-images.githubusercontent.com/37598162/124051034-f7b8fd00-da1b-11eb-9691-307b756c6e37.png)
+![image](https://user-images.githubusercontent.com/37598162/124204795-1680c780-dae0-11eb-812a-75abb5acd01d.png)
 
+## TO-DO list
 
+These features will be coming in the near future, I might do a little development diary too while I'm at it!
+
+- Generate a permutation matrix (like Perlin noise does) for memory efficency
+- Compute the noise function for each octave in parallel to possibly achieve faster results
+- More noise types (Perlin, Simplex, Fractal, etc...)
