@@ -1,17 +1,18 @@
 #include <iostream> 
 #include <exception>
 #include <vector>
+#include <thread>
 #include <cmath>
 
 #include <noise.hpp>
 #include <mathutils.hpp>
 
-ValueNoise2D::ValueNoise2D(const unsigned int m, const unsigned int n, Interpolator1D* im, int seed, int octaves) 
-    : _interpolation_method(im), _seed(seed), _octaves(octaves), _m(m), _n(n), _grid(octaves, 
-                                                                  std::vector<std::vector<double>>(m + 1, 
-                                                                                                   std::vector<double>(n + 1))) 
+ValueNoise2D::ValueNoise2D(const unsigned int m, const unsigned int n, Interpolator1D* im, int seed, int octaves)
+    : _interpolation_method(im), _seed(seed), _octaves(octaves), _m(m), _n(n), _grid(octaves,
+        std::vector<std::vector<double>>(m + 1,
+            std::vector<double>(n + 1)))
 {
-    for ( int i = 0; i < _octaves; i++ )
+    for (int i = 0; i < _octaves; i++)
     {
         generateGrid(i);
     }
@@ -26,33 +27,38 @@ double ValueNoise2D::operator()(double x, double y)
     else {
 
         Interpolator2D bcerp(_interpolation_method);
-        // 0 <= ygrid < GRID_SIZE
-        double ygrid = y * (double)_m;
-        int ygrid_tile = ygrid;
-        double ygrid_pos = ygrid - floor(ygrid);
-        // 0 <= xgrid < GRID_SIZE
-        double xgrid = x * (double)_n;
-        int xgrid_tile = xgrid;
-        double xgrid_pos = xgrid - floor(xgrid);
 
         double value = 0.0;
-        
+
         for (int i = 0; i < _octaves; i++)
         {
             // std::cout << "Octave " << i << "|" << _grid[i][xgrid_tile][ygrid_tile] << std::endl;
 
-            value += bcerp.eval
-            (   
-                _grid[i][xgrid_tile][ygrid_tile], 
-                _grid[i][xgrid_tile + 1][ygrid_tile], 
-                _grid[i][xgrid_tile][ygrid_tile + 1], 
-                _grid[i][xgrid_tile + 1][ygrid_tile + 1],
+            double scale_factor = i + 1;
+
+            // 0 <= ygrid < GRID_SIZE
+            double ygrid = scale_factor * y * (double)_n;
+            int ygrid_tile = (int)ygrid;
+            double ygrid_pos = ygrid - floor(ygrid);
+
+            // 0 <= xgrid < GRID_SIZE
+            double xgrid = scale_factor * x * (double)_m;
+            int xgrid_tile = (int)xgrid;
+            double xgrid_pos = xgrid - floor(xgrid);
+
+            value += (bcerp.eval
+            (
+                _grid[i][xgrid_tile % _m][ygrid_tile % _n],
+                _grid[i][(xgrid_tile + 1) % _m][ygrid_tile % _n],
+                _grid[i][xgrid_tile % _m][(ygrid_tile + 1) % _n],
+                _grid[i][(xgrid_tile + 1) % _m][(ygrid_tile + 1) % _n],
                 xgrid_pos, ygrid_pos
-            );
+            )) / (double)(2 << i);
+            
         }
 
         // std::cout << value << std::endl;
-        return value / (double)_octaves;
+        return value;
     }
 }
 
@@ -72,3 +78,5 @@ void ValueNoise2D::generateGrid(int octave)
         }
     }
 }
+
+

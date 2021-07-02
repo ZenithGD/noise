@@ -17,6 +17,8 @@ class ValueNoise2D
 
         void generateGrid(int octave);
 
+        void computeNoise(double x, double y, double& value);
+
     public:
         /* Pre: -
          * Post: Generate a random (M + 1) x (N - 1) grid with numbers in [0, 1]
